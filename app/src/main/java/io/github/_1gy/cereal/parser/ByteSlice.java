@@ -34,6 +34,11 @@ public class ByteSlice {
         return of(this, range);
     }
 
+    @Override
+    public String toString() {
+        return "ByteSlice[" + offset + ".." + (offset + length) + ']';
+    }
+
     public static ByteSlice of(byte[] bytes) {
         Objects.requireNonNull(bytes, "bytes");
         return new ByteSlice(bytes, 0, bytes.length);

@@ -159,4 +159,14 @@ public class ByteSliceTest {
         final var slice = ByteSlice.of(bytes);
         assertArrayEquals(new byte[] { 1, 2, 3 }, slice.slice(Range.of(1, 4)).toByteArray());
     }
+
+    @Test
+    void testToString() {
+        final var bytes = new byte[] { 0, 1, 2, 3, 4, 5 };
+        final var slice = ByteSlice.of(bytes);
+        assertEquals("ByteSlice[0..6]", slice.toString());
+
+        final var subslice = ByteSlice.of(slice, Range.of(1, 4));
+        assertEquals("ByteSlice[1..4]", subslice.toString());
+    }
 }
