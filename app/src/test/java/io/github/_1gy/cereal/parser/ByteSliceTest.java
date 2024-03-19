@@ -79,6 +79,12 @@ public class ByteSliceTest {
     }
 
     @Test
+    void testOf_ByteSlice_nullcheck() {
+        final ByteSlice slice = null;
+        assertThrows(NullPointerException.class, () -> ByteSlice.of(slice, Range.of(0, 1)));
+    }
+
+    @Test
     void testOf_ByteArray_invalidRange() {
         final var bytes = new byte[] { 1, 2, 3, 4 };
 
@@ -97,6 +103,13 @@ public class ByteSliceTest {
         assertArrayEquals(new byte[] { 1, 2, 3, }, ByteSlice.of(bytes, Range.to(3)).toByteArray());
         assertArrayEquals(new byte[] { 1, 2, 3, 4 }, ByteSlice.of(bytes, Range.to(4)).toByteArray());
         assertThrows(IllegalArgumentException.class, () -> ByteSlice.of(bytes, Range.to(5)));
+    }
+
+    @Test
+    void testOf_ByteArray_nullcheck() {
+        final byte[] bytes = null;
+        assertThrows(NullPointerException.class, () -> ByteSlice.of(bytes));
+        assertThrows(NullPointerException.class, () -> ByteSlice.of(bytes, Range.of(0, 1)));
     }
 
     @Test

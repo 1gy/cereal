@@ -1,5 +1,7 @@
 package io.github._1gy.cereal.parser;
 
+import java.util.Objects;
+
 public class ByteSlice {
     private final byte[] bytes;
     private final int offset;
@@ -29,10 +31,14 @@ public class ByteSlice {
     }
 
     public static ByteSlice of(byte[] bytes) {
+        Objects.requireNonNull(bytes, "bytes");
         return new ByteSlice(bytes, 0, bytes.length);
     }
 
     public static ByteSlice of(byte[] bytes, Range range) {
+        Objects.requireNonNull(bytes, "bytes");
+        Objects.requireNonNull(range, "range");
+
         final int offset;
         final int length;
 
@@ -65,6 +71,9 @@ public class ByteSlice {
     }
 
     public static ByteSlice of(ByteSlice slice, Range range) {
+        Objects.requireNonNull(slice, "slice");
+        Objects.requireNonNull(range, "range");
+
         final int offset;
         final int length;
 
