@@ -152,4 +152,11 @@ public class ByteSliceTest {
         assertEquals(3, subslice.get(2));
         assertThrows(IndexOutOfBoundsException.class, () -> subslice.get(3));
     }
+
+    @Test
+    void testSlice() {
+        final var bytes = new byte[] { 0, 1, 2, 3, 4, 5 };
+        final var slice = ByteSlice.of(bytes);
+        assertArrayEquals(new byte[] { 1, 2, 3 }, slice.slice(Range.of(1, 4)).toByteArray());
+    }
 }

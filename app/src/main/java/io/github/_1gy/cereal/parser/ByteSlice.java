@@ -30,6 +30,10 @@ public class ByteSlice {
         return bytes[offset + index];
     }
 
+    public ByteSlice slice(Range range) {
+        return of(this, range);
+    }
+
     public static ByteSlice of(byte[] bytes) {
         Objects.requireNonNull(bytes, "bytes");
         return new ByteSlice(bytes, 0, bytes.length);
