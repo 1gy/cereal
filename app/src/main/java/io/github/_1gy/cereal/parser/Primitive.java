@@ -1,6 +1,17 @@
 package io.github._1gy.cereal.parser;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
+
 public final class Primitive {
+
+    private static final VarHandle BE_SHORT_HANDLE = MethodHandles.byteArrayViewVarHandle(short[].class,
+            ByteOrder.BIG_ENDIAN);
+    private static final VarHandle BE_INT_HANDLE = MethodHandles.byteArrayViewVarHandle(int[].class,
+            ByteOrder.BIG_ENDIAN);
+    private static final VarHandle BE_LONG_HANDLE = MethodHandles.byteArrayViewVarHandle(long[].class,
+            ByteOrder.BIG_ENDIAN);
 
     public static final Parser<ByteSlice, Byte, String> beI8() {
         return input -> {
@@ -18,7 +29,8 @@ public final class Primitive {
             if (input.length() < 2) {
                 return ParseResult.err("input too short");
             }
-            var value = (short) ((input.get(0) << 8) | input.get(1));
+            var buffer = input.slice(Range.to(2)).toByteArray();
+            var value = (short) BE_SHORT_HANDLE.get(buffer, 0);
             var rest = input.slice(Range.from(2));
             return ParseResult.ok(rest, value);
         };
@@ -29,7 +41,8 @@ public final class Primitive {
             if (input.length() < 4) {
                 return ParseResult.err("input too short");
             }
-            var value = (input.get(0) << 24) | (input.get(1) << 16) | (input.get(2) << 8) | input.get(3);
+            var buffer = input.slice(Range.to(4)).toByteArray();
+            var value = (int) BE_INT_HANDLE.get(buffer, 0);
             var rest = input.slice(Range.from(4));
             return ParseResult.ok(rest, value);
         };
@@ -40,9 +53,8 @@ public final class Primitive {
             if (input.length() < 8) {
                 return ParseResult.err("input too short");
             }
-            var value = ((long) input.get(0) << 56) | ((long) input.get(1) << 48) | ((long) input.get(2) << 40)
-                    | ((long) input.get(3) << 32) | ((long) input.get(4) << 24) | ((long) input.get(5) << 16)
-                    | ((long) input.get(6) << 8) | (long) input.get(7);
+            var buffer = input.slice(Range.to(8)).toByteArray();
+            var value = (long) BE_LONG_HANDLE.get(buffer, 0);
             var rest = input.slice(Range.from(8));
             return ParseResult.ok(rest, value);
         };
