@@ -161,6 +161,15 @@ public class ByteSliceTest {
     }
 
     @Test
+    void testStartsWith() {
+        final var bytes = new byte[] { 0, 1, 2, 3, 4, 5 };
+        final var slice = ByteSlice.of(bytes);
+        assertEquals(true, slice.startsWith(new byte[] { 0, 1, 2 }));
+        assertEquals(false, slice.startsWith(new byte[] { 1, 2, 3 }));
+        assertEquals(false, slice.startsWith(new byte[] { 0, 1, 2, 3, 4, 5, 6 }));
+    }
+
+    @Test
     void testToString() {
         final var bytes = new byte[] { 0, 1, 2, 3, 4, 5 };
         final var slice = ByteSlice.of(bytes);

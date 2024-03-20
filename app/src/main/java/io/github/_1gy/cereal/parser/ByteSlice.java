@@ -34,6 +34,18 @@ public class ByteSlice {
         return of(this, range);
     }
 
+    public boolean startsWith(byte[] prefix) {
+        if (length < prefix.length) {
+            return false;
+        }
+        for (int i = 0; i < prefix.length; i++) {
+            if (bytes[offset + i] != prefix[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
         return "ByteSlice[" + offset + ".." + (offset + length) + ']';
