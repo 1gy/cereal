@@ -1,6 +1,6 @@
 package io.github._1gy.cereal.parser;
 
-public sealed interface ParseResult<I, O, E> permits ParseResult.Ok, ParseResult.Err {
+public sealed interface Result<I, O, E> permits Result.Ok, Result.Err {
 
     boolean isOk();
 
@@ -12,15 +12,15 @@ public sealed interface ParseResult<I, O, E> permits ParseResult.Ok, ParseResult
 
     E error();
 
-    public static <I, O, E> ParseResult<I, O, E> ok(I rest, O value) {
+    public static <I, O, E> Result<I, O, E> ok(I rest, O value) {
         return new Ok<>(rest, value);
     }
 
-    public static <I, O, E> ParseResult<I, O, E> err(E error) {
+    public static <I, O, E> Result<I, O, E> err(E error) {
         return new Err<>(error);
     }
 
-    record Ok<I, O, E>(I rest, O value) implements ParseResult<I, O, E> {
+    record Ok<I, O, E>(I rest, O value) implements Result<I, O, E> {
         @Override
         public boolean isOk() {
             return true;
@@ -37,7 +37,7 @@ public sealed interface ParseResult<I, O, E> permits ParseResult.Ok, ParseResult
         }
     }
 
-    record Err<I, O, E>(E error) implements ParseResult<I, O, E> {
+    record Err<I, O, E>(E error) implements Result<I, O, E> {
         @Override
         public boolean isOk() {
             return false;

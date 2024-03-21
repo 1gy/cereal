@@ -10,9 +10,9 @@ public class ParserTest {
         Parser<ByteSlice, Integer, String> digit = input -> {
             var c = input.get(0);
             if (c >= '0' && c <= '9') {
-                return ParseResult.ok(input.slice(Range.from(1)), (int) c - '0');
+                return Result.ok(input.slice(Range.from(1)), (int) c - '0');
             } else {
-                return ParseResult.err("not a digit");
+                return Result.err("not a digit");
             }
         };
         var result = digit.parse(ByteSlice.of("123".getBytes()));
