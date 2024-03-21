@@ -20,7 +20,7 @@ public final class Primitive {
             }
             var value = input.get(0);
             var rest = input.slice(Range.from(1));
-            return Result.ok(rest, value);
+            return Result.ok(ParsedValue.of(rest, value));
         };
     }
 
@@ -32,7 +32,7 @@ public final class Primitive {
             var buffer = input.slice(Range.to(2)).toByteArray();
             var value = (short) BE_SHORT_HANDLE.get(buffer, 0);
             var rest = input.slice(Range.from(2));
-            return Result.ok(rest, value);
+            return Result.ok(ParsedValue.of(rest, value));
         };
     }
 
@@ -44,7 +44,7 @@ public final class Primitive {
             var buffer = input.slice(Range.to(4)).toByteArray();
             var value = (int) BE_INT_HANDLE.get(buffer, 0);
             var rest = input.slice(Range.from(4));
-            return Result.ok(rest, value);
+            return Result.ok(ParsedValue.of(rest, value));
         };
     }
 
@@ -56,7 +56,7 @@ public final class Primitive {
             var buffer = input.slice(Range.to(8)).toByteArray();
             var value = (long) BE_LONG_HANDLE.get(buffer, 0);
             var rest = input.slice(Range.from(8));
-            return Result.ok(rest, value);
+            return Result.ok(ParsedValue.of(rest, value));
         };
     }
 
@@ -65,7 +65,7 @@ public final class Primitive {
             if (input.startsWith(bytes)) {
                 var rest = input.slice(Range.from(bytes.length));
                 var value = ByteSlice.of(bytes);
-                return Result.ok(rest, value);
+                return Result.ok(ParsedValue.of(rest, value));
             } else {
                 return Result.err("tag not found");
             }

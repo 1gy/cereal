@@ -1,26 +1,24 @@
 package io.github._1gy.cereal.parser;
 
-public sealed interface Result<I, O, E> permits Result.Ok, Result.Err {
+public sealed interface Result<T, E> permits Result.Ok, Result.Err {
 
     boolean isOk();
 
     boolean isErr();
 
-    I rest();
+    T unwrap();
 
-    O value();
+    E unwrapErr();
 
-    E error();
-
-    public static <I, O, E> Result<I, O, E> ok(I rest, O value) {
-        return new Ok<>(rest, value);
+    public static <T, E> Result<T, E> ok(T value) {
+        return new Ok<>(value);
     }
 
-    public static <I, O, E> Result<I, O, E> err(E error) {
+    public static <T, E> Result<T, E> err(E error) {
         return new Err<>(error);
     }
 
-    record Ok<I, O, E>(I rest, O value) implements Result<I, O, E> {
+    record Ok<T, E>(T value) implements Result<T, E> {
         @Override
         public boolean isOk() {
             return true;
@@ -32,12 +30,17 @@ public sealed interface Result<I, O, E> permits Result.Ok, Result.Err {
         }
 
         @Override
-        public E error() {
+        public T unwrap() {
+            return value;
+        }
+
+        @Override
+        public E unwrapErr() {
             throw new IllegalStateException("not an error");
         }
     }
 
-    record Err<I, O, E>(E error) implements Result<I, O, E> {
+    record Err<T, E>(E error) implements Result<T, E> {
         @Override
         public boolean isOk() {
             return false;
@@ -49,13 +52,13 @@ public sealed interface Result<I, O, E> permits Result.Ok, Result.Err {
         }
 
         @Override
-        public I rest() {
-            throw new IllegalStateException("not a rest");
+        public T unwrap() {
+            throw new IllegalStateException("not a value");
         }
 
         @Override
-        public O value() {
-            throw new IllegalStateException("not a value");
+        public E unwrapErr() {
+            return error;
         }
     }
 }
