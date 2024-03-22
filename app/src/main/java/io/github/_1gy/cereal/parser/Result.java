@@ -1,5 +1,7 @@
 package io.github._1gy.cereal.parser;
 
+import java.util.function.Function;
+
 public sealed interface Result<T, E> permits Result.Ok, Result.Err {
 
     boolean isOk();
@@ -9,6 +11,28 @@ public sealed interface Result<T, E> permits Result.Ok, Result.Err {
     T unwrap();
 
     E unwrapErr();
+
+    public default <U> Result<U, E> map(Function<T, U> op) {
+        switch (this) {
+            case Ok<T, E> ok -> {
+                return ok(op.apply(ok.value()));
+            }
+            case Err<T, E> err -> {
+                return err(err.error());
+            }
+        }
+    }
+
+    public default <U> Result<U, E> andThen(Function<T, Result<U, E>> op) {
+        switch (this) {
+            case Ok<T, E> ok -> {
+                return op.apply(ok.value());
+            }
+            case Err<T, E> err -> {
+                return err(err.error());
+            }
+        }
+    }
 
     public static <T, E> Result<T, E> ok(T value) {
         return new Ok<>(value);

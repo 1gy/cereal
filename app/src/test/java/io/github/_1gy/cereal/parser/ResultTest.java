@@ -58,4 +58,26 @@ public class ResultTest {
         var result2 = Result.err("error");
         assertEquals("error", result2.unwrapErr());
     }
+
+    @Test
+    void test_map() {
+        var result1 = Result.ok("value");
+        var result2 = result1.map(String::length);
+        assertEquals(5, result2.unwrap());
+
+        Result<String, ?> result3 = Result.err("error");
+        var result4 = result3.map(String::length);
+        assertEquals("error", result4.unwrapErr());
+    }
+
+    @Test
+    void test_andThen() {
+        var result1 = Result.ok("value");
+        var result2 = result1.andThen(value -> Result.ok(value.length()));
+        assertEquals(5, result2.unwrap());
+
+        Result<String, ?> result3 = Result.err("error");
+        var result4 = result3.andThen(value -> Result.ok(value.length()));
+        assertEquals("error", result4.unwrapErr());
+    }
 }
