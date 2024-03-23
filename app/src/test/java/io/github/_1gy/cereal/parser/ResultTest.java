@@ -43,7 +43,7 @@ public class ResultTest {
     }
 
     @Test
-    void test_value() {
+    void test_unwrap() {
         var result1 = Result.ok("value");
         assertEquals("value", result1.unwrap());
 
@@ -52,7 +52,7 @@ public class ResultTest {
     }
 
     @Test
-    void test_error() {
+    void test_unwrapErr() {
         var result1 = Result.ok("value");
         assertThrows(IllegalStateException.class, () -> result1.unwrapErr());
 

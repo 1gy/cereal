@@ -16,10 +16,10 @@ public sealed interface Result<T, E> permits Result.Ok, Result.Err {
     public default <U> Result<U, E> map(Function<T, U> op) {
         switch (this) {
             case Ok<T, E> ok -> {
-                return ok(op.apply(ok.unwrap()));
+                return ok(op.apply(ok.value));
             }
             case Err<T, E> err -> {
-                return err(err.unwrapErr());
+                return err(err.error);
             }
         }
     }
@@ -27,10 +27,10 @@ public sealed interface Result<T, E> permits Result.Ok, Result.Err {
     public default <U> Result<U, E> andThen(Function<T, Result<U, E>> op) {
         switch (this) {
             case Ok<T, E> ok -> {
-                return op.apply(ok.unwrap());
+                return op.apply(ok.value);
             }
             case Err<T, E> err -> {
-                return err(err.unwrapErr());
+                return err(err.error);
             }
         }
     }
@@ -43,7 +43,7 @@ public sealed interface Result<T, E> permits Result.Ok, Result.Err {
         return new Err<>(error);
     }
 
-    final class Ok<T, E> implements Result<T, E> {
+    public final class Ok<T, E> implements Result<T, E> {
 
         private final T value;
 
@@ -94,7 +94,7 @@ public sealed interface Result<T, E> permits Result.Ok, Result.Err {
         }
     }
 
-    final class Err<T, E> implements Result<T, E> {
+    public final class Err<T, E> implements Result<T, E> {
 
         private final E error;
 
