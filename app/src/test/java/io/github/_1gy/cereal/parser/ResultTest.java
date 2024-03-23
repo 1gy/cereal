@@ -1,6 +1,7 @@
 package io.github._1gy.cereal.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -79,5 +80,61 @@ public class ResultTest {
         Result<String, ?> result3 = Result.err("error");
         var result4 = result3.andThen(value -> Result.ok(value.length()));
         assertEquals("error", result4.unwrapErr());
+    }
+
+    @Test
+    void test_ok_hashCode() {
+        var result1 = Result.ok("value");
+        var result2 = Result.ok("value");
+        assertEquals(result1.hashCode(), result2.hashCode());
+    }
+
+    @Test
+    void test_err_hashCode() {
+        var result1 = Result.err("error");
+        var result2 = Result.err("error");
+        assertEquals(result1.hashCode(), result2.hashCode());
+    }
+
+    @Test
+    void test_ok_equals() {
+        var result1 = Result.ok("value");
+        var result2 = Result.ok("value");
+        assertEquals(result1, result2);
+
+        var result3 = Result.ok("value1");
+        var result4 = Result.ok("value2");
+        assertNotEquals(result3, result4);
+
+        var result5 = Result.ok("value");
+        var result6 = Result.err("error");
+        assertNotEquals(result5, result6);
+    }
+
+    @Test
+    void test_err_equals() {
+        var result1 = Result.err("error");
+        var result2 = Result.err("error");
+        assertEquals(result1, result2);
+
+        var result3 = Result.err("error1");
+        var result4 = Result.err("error2");
+        assertNotEquals(result3, result4);
+
+        var result5 = Result.err("error");
+        var result6 = Result.ok("value");
+        assertNotEquals(result5, result6);
+    }
+
+    @Test
+    void test_ok_toString() {
+        var result = Result.ok("value");
+        assertEquals("Ok [value=value]", result.toString());
+    }
+
+    @Test
+    void test_err_toString() {
+        var result = Result.err("error");
+        assertEquals("Err [error=error]", result.toString());
     }
 }

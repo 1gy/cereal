@@ -1,5 +1,6 @@
 package io.github._1gy.cereal.parser;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 public sealed interface Result<T, E> permits Result.Ok, Result.Err {
@@ -15,10 +16,10 @@ public sealed interface Result<T, E> permits Result.Ok, Result.Err {
     public default <U> Result<U, E> map(Function<T, U> op) {
         switch (this) {
             case Ok<T, E> ok -> {
-                return ok(op.apply(ok.value()));
+                return ok(op.apply(ok.unwrap()));
             }
             case Err<T, E> err -> {
-                return err(err.error());
+                return err(err.unwrapErr());
             }
         }
     }
@@ -26,10 +27,10 @@ public sealed interface Result<T, E> permits Result.Ok, Result.Err {
     public default <U> Result<U, E> andThen(Function<T, Result<U, E>> op) {
         switch (this) {
             case Ok<T, E> ok -> {
-                return op.apply(ok.value());
+                return op.apply(ok.unwrap());
             }
             case Err<T, E> err -> {
-                return err(err.error());
+                return err(err.unwrapErr());
             }
         }
     }
@@ -42,7 +43,14 @@ public sealed interface Result<T, E> permits Result.Ok, Result.Err {
         return new Err<>(error);
     }
 
-    record Ok<T, E>(T value) implements Result<T, E> {
+    final class Ok<T, E> implements Result<T, E> {
+
+        private final T value;
+
+        public Ok(T value) {
+            this.value = value;
+        }
+
         @Override
         public boolean isOk() {
             return true;
@@ -62,9 +70,38 @@ public sealed interface Result<T, E> permits Result.Ok, Result.Err {
         public E unwrapErr() {
             throw new IllegalStateException("not an error");
         }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(value);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+            final Ok<?, ?> other = (Ok<?, ?>) obj;
+            return Objects.equals(value, other.value);
+        }
+
+        @Override
+        public String toString() {
+            return "Ok [value=" + value + "]";
+        }
     }
 
-    record Err<T, E>(E error) implements Result<T, E> {
+    final class Err<T, E> implements Result<T, E> {
+
+        private final E error;
+
+        public Err(E error) {
+            this.error = error;
+        }
+
         @Override
         public boolean isOk() {
             return false;
@@ -83,6 +120,28 @@ public sealed interface Result<T, E> permits Result.Ok, Result.Err {
         @Override
         public E unwrapErr() {
             return error;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(error);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+            final Err<?, ?> other = (Err<?, ?>) obj;
+            return Objects.equals(error, other.error);
+        }
+
+        @Override
+        public String toString() {
+            return "Err [error=" + error + "]";
         }
     }
 }

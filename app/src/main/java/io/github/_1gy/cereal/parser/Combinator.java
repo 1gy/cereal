@@ -13,11 +13,11 @@ public final class Combinator {
         return input -> {
             switch (parser.parse(input)) {
                 case Ok<ParsedValue<I, O>, E> ok -> {
-                    var parsed = ok.value();
+                    var parsed = ok.unwrap();
                     return Result.ok(ParsedValue.of(parsed.rest(), mapper.apply(parsed.value())));
                 }
                 case Err<?, E> err -> {
-                    return Result.err(err.error());
+                    return Result.err(err.unwrapErr());
                 }
             }
         };
@@ -30,7 +30,7 @@ public final class Combinator {
             while (true) {
                 switch (parser.parse(rest)) {
                     case Ok<ParsedValue<I, O>, E> ok -> {
-                        var parsed = ok.value();
+                        var parsed = ok.unwrap();
                         result.add(parsed.value());
                         rest = parsed.rest();
                     }
